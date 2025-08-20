@@ -1,0 +1,21 @@
+{
+  "name": "sui-bundler",
+  "version": "1.0.0",
+  "description": "Sui SDK bundler for mini-apps",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "terser": "^5.24.0",
+    "vite": "^5.0.0",
+    "vite-plugin-node-polyfills": "^0.21.0"
+  },
+  "dependencies": {
+    "@mysten/sui": "^1.37.1",
+    "@mysten/sui.js": "^0.54.1",
+    "bip39": "^3.1.0"
+  }
+}

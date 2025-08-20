@@ -1,0 +1,5 @@
+{
+  "name": "Sui Wallet",
+  "icon": "assets/icons/app_icon.png",
+  "pages": ["pages/index/index", "pages/send/send", "pages/receive/receive"]
+}

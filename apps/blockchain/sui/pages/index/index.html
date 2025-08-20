@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Coin Wallet</title>
+    <link rel="stylesheet" href="../../app.css" />
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <div class="container">
+      <!-- 지갑 생성 화면 -->
+      <div id="wallet-creation" class="wallet-screen" style="display: none;">
+        <div class="creation-content">
+          <img src="../../assets/icons/app_icon.png" alt="Coin Logo" class="coin-logo-large" />
+          <h1 class="creation-title">Coin Wallet</h1>
+          <p class="creation-description">Create a secure Coin wallet</p>
+          
+          <button class="create-wallet-btn" onclick="createWallet()">
+            Create New Wallet
+          </button>
+          
+          <div class="divider">
+            <span>or</span>
+          </div>
+          
+          <div class="import-section">
+            <h3>Import Wallet</h3>
+            
+            <!-- 니모닉 가져오기 -->
+            <div class="import-option" id="mnemonic-import">
+              <h4>Recover with Mnemonic</h4>
+              <textarea 
+                id="mnemonic-input" 
+                class="import-input" 
+                placeholder="Enter 12 or 24 words separated by spaces"
+                rows="3"
+              ></textarea>
+              <button class="import-btn" onclick="importFromMnemonic()">
+                Import with Mnemonic
+              </button>
+            </div>
+            
+            <!-- 개인키 가져오기 -->
+            <div class="import-option" id="privatekey-import">
+              <h4>Recover with Private Key</h4>
+              <input 
+                type="password"
+                id="privatekey-input" 
+                class="import-input" 
+                placeholder="Enter your private key"
+              />
+              <button class="import-btn" onclick="importFromPrivateKey()">
+                Import with Private Key
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 메인 지갑 화면 -->
+      <div id="wallet-main" class="wallet-screen" style="display: none;">
+        <!-- 헤더 -->
+        <header class="header">
+          <div class="header-content">
+            <div class="logo">
+              <img src="../../assets/icons/app_icon.png" alt="Coin Logo" class="coin-logo" />
+              <span class="logo-text">Coin</span>
+            </div>
+            <button class="reset-wallet-btn" onclick="resetWallet()" title="Reset Wallet">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M2.5 10C2.5 14.1421 5.85786 17.5 10 17.5C14.1421 17.5 17.5 14.1421 17.5 10C17.5 5.85786 14.1421 2.5 10 2.5C7.51088 2.5 5.31615 3.76957 4.01111 5.68889L5.55556 5.68889" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+        </header>
+
+        <!-- 잔액 카드 -->
+        <div class="card balance-card">
+          <div class="balance-header">
+            <span class="balance-label" id="network-label">Testnet</span>
+            <span class="network-status" id="network-status">●</span>
+            <button class="network-switch-btn" onclick="switchNetwork()" title="Switch Network">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8 1L15 8L8 15M15 8H1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+          <div class="balance-amount">
+            <div class="coin-balance">
+              <span id="balance-display">0.0000</span>
+              <span class="coin-unit">COIN</span>
+            </div>
+            <div class="fiat-value" id="fiat-value">≈ $0.00</div>
+          </div>
+          
+          <!-- 주소 표시 -->
+          <div class="address-container">
+            <div class="address-label">Address</div>
+            <div class="address-display" id="address-display">
+              Loading...
+            </div>
+          </div>
+          
+          <!-- 액션 버튼들 -->
+          <div class="action-buttons">
+            <button class="action-btn" onclick="navigateToSend()">
+              <span>Send</span>
+            </button>
+            <button class="action-btn" onclick="navigateToReceive()">
+              <span>Receive</span>
+            </button>
+            <button class="action-btn faucet-btn" onclick="requestFaucet()" style="background: #6FBDFF;">
+              <span>Get Test SUI</span>
+            </button>
+            <button class="action-btn testnet-btn" onclick="switchToTestnet()" style="background: #FF6B6B;">
+              <span>Switch to Testnet</span>
+            </button>
+          </div>
+          
+          <!-- 디버깅 섹션 -->
+          <div class="debug-section" style="margin-top: 20px; padding: 15px; background: #f5f5f5; border-radius: 8px;">
+            <h4 style="margin: 0 0 10px 0; color: #666;">Debug Info</h4>
+            <div style="font-size: 12px; color: #666;">
+              <div>Network: <span id="debug-network">-</span></div>
+              <div>Address: <span id="debug-address">-</span></div>
+              <div>Raw Balance: <span id="debug-balance">-</span></div>
+            </div>
+            <button onclick="refreshDebugInfo()" style="margin-top: 10px; padding: 5px 10px; font-size: 12px; background: #ddd; border: none; border-radius: 4px; cursor: pointer;">
+              Refresh Debug Info
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 필요한 라이브러리들 -->
+          <!-- Sui SDK 번들 -->
+    <script src="../../assets/sui-bundle.umd.js"></script>
+    
+    <!-- 설정 및 어댑터 -->
+    <script src="../../app.js"></script>
+    
+    <!-- 메인 로직 -->
+    <script src="index.js"></script>
+  </body>
+</html>
